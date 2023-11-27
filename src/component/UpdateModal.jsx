@@ -3,7 +3,7 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
-//
+import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
@@ -19,6 +19,7 @@ const UpdateModal = () => {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const navigate = useNavigate()
 
   let getData = async () => {
     try {
@@ -38,6 +39,22 @@ const UpdateModal = () => {
     }
   };
 
+  async function handleUpdate(userId) {
+    try {
+        await axios.patch(`https://newresapibackend.onrender.com/api/user/${userId}`, {
+          name,
+          email,
+          profession,
+          gender
+       })
+      navigate('/AllUsers');
+       
+
+    } catch (error) {
+      console.log(error);
+      alert(error.response.data.msg.message)
+    }
+  }
   useEffect(() => {
     getData();
   }, [userId]);
@@ -106,7 +123,7 @@ const UpdateModal = () => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="primary" onClick={() =>{handleClose; handleUpdate(userId)}}>
             Update
           </Button>
         </Modal.Footer>
